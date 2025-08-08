@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Quản lý khách hàng</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <h1>Quản lý khách hàng</h1>
+    <form method="POST">
+        <input type="text" name="name" placeholder="Tên khách hàng" required>
+        <input type="text" name="contact" placeholder="Số điện thoại / Email" required>
+        <textarea name="notes" placeholder="Ghi chú"></textarea>
+        <button type="submit">Thêm khách hàng</button>
+    </form>
+
+    <h2>Danh sách khách hàng</h2>
+    <ul>
+        {% for customer in customers %}
+            <li>{{ customer[1] }} - {{ customer[2] }} ({{ customer[3] }})</li>
+        {% endfor %}
+    </ul>
+
+    <a href="{{ url_for('suggest') }}">Xem gợi ý phát triển kinh doanh từ AI</a>
+</body>
+</html>

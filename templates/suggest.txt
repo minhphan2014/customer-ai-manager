@@ -1,0 +1,12 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Gợi ý từ AI</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <h1>Gợi ý từ AI</h1>
+    <pre>{{ suggestion }}</pre>
+    <a href="{{ url_for('index') }}">Quay lại</a>
+</body>
+</html>
