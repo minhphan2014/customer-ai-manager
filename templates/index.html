@@ -1,26 +1,62 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Quản lý khách hàng</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
-</head>
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<body>
-    <h1>Quản lý khách hàng</h1>
-    <form method="POST">
-        <input type="text" name="name" placeholder="Tên khách hàng" required>
-        <input type="text" name="contact" placeholder="Số điện thoại / Email" required>
-        <textarea name="notes" placeholder="Ghi chú"></textarea>
-        <button type="submit">Thêm khách hàng</button>
-    </form>
+{% extends "base.html" %}
+{% block title %}Quản lý khách hàng{% endblock %}
+{% block content %}
+<h1>📋 Quản lý khách hàng</h1>
 
-    <h2>Danh sách khách hàng</h2>
-    <ul>
-        {% for customer in customers %}
-            <li>{{ customer[1] }} - {{ customer[2] }} ({{ customer[3] }})</li>
+{% with messages = get_flashed_messages(with_categories=true) %}
+  {% if messages %}
+    <div class="flash-area">
+      {% for category, msg in messages %}
+        <div class="flash {{ category }}">{{ msg }}</div>
+      {% endfor %}
+    </div>
+  {% endif %}
+{% endwith %}
+
+<div class="card">
+  <form method="POST">
+    <input name="name" placeholder="Tên khách hàng" required>
+    <input name="contact" placeholder="Số điện thoại / Email">
+    <textarea name="notes" placeholder="Ghi chú (lịch sử, nhu cầu...)"></textarea>
+    <button type="submit">Thêm khách hàng</button>
+  </form>
+</div>
+
+<h2>Danh sách khách hàng</h2>
+<div class="card list">
+  {% if customers %}
+    <table>
+      <thead><tr><th>Tên</th><th>Contact</th><th>Ghi chú</th><th>Gợi ý gần nhất</th><th></th></tr></thead>
+      <tbody>
+        {% for c in customers %}
+        <tr>
+          <td>{{ c.name }}</td>
+          <td>{{ c.contact }}</td>
+          <td>{{ c.notes }}</td>
+          <td>
+            {% set last = c.suggestions|sort(attribute='created_at')|last %}
+            {% if last %}
+              <div class="small">{{ last.content[:160] }}{% if last.content|length > 160 %}...{% endif %}</div>
+            {% else %}
+              <em>Chưa có</em>
+            {% endif %}
+          </td>
+          <td>
+            <form action="{{ url_for('suggest_for_customer', cust_id=c.id) }}" method="POST" style="display:inline">
+              <button type="submit">Gợi ý AI</button>
+            </form>
+            <form action="{{ url_for('delete_customer', cust_id=c.id) }}" method="POST" style="display:inline" onsubmit="return confirm('Xóa khách hàng?')">
+              <button class="danger" type="submit">Xóa</button>
+            </form>
+          </td>
+        </tr>
         {% endfor %}
-    </ul>
+      </tbody>
+    </table>
+  {% else %}
+    <p>Chưa có khách hàng nào.</p>
+  {% endif %}
+</div>
 
-    <a href="{{ url_for('suggest') }}">Xem gợi ý phát triển kinh doanh từ AI</a>
-</body>
-</html>
+<a class="btn" href="{{ url_for('suggest') }}">💡 Gợi ý tổng hợp từ AI</a>
+{% endblock %}

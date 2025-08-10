@@ -1,13 +1,22 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Gợi ý từ AI</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-</head>
-<body>
-    <h1>Gợi ý từ AI</h1>
-    <pre>{{ suggestion }}</pre>
-    <a href="{{ url_for('index') }}">Quay lại</a>
-</body>
-</html>
+{% extends "base.html" %}
+{% block title %}Gợi ý từ AI{% endblock %}
+{% block content %}
+<h1>💡 Gợi ý từ AI</h1>
+
+<div class="card">
+  <form method="POST">
+    <label>Mô tả ngắn (tùy chọn):</label>
+    <textarea name="business_info" placeholder="Ví dụ: cửa hàng chủ yếu sửa xe tay ga, khách trung tuổi..."></textarea>
+    <button type="submit">Nhận gợi ý</button>
+  </form>
+</div>
+
+{% if suggestion %}
+  <div class="card">
+    <h3>Kết quả</h3>
+    <pre class="suggest">{{ suggestion }}</pre>
+  </div>
+{% endif %}
+
+<a class="btn" href="{{ url_for('index') }}">⬅ Quay lại</a>
+{% endblock %}
